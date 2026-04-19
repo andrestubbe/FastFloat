@@ -21,8 +21,49 @@ import java.nio.ByteBuffer;
  */
 public final class FastFloat {
     
+    private static final String LIBRARY_NAME = "fastfloat";
+    private static volatile boolean nativeLoaded = false;
+    
     static {
-        FastCore.loadLibrary("fastfloat");
+        loadNativeLibrary();
+    }
+    
+    /**
+     * Load native library from JAR or system path.
+     * Attempts to extract and load from JAR first, falls back to system library.
+     */
+    private static void loadNativeLibrary() {
+        try {
+            // Try to load from JAR (Fat JAR support)
+            String libFileName = System.mapLibraryName(LIBRARY_NAME);
+            String nativePath = "/native/" + libFileName;
+            
+            java.io.InputStream is = FastFloat.class.getResourceAsStream(nativePath);
+            if (is != null) {
+                // Extract to temp directory
+                java.nio.file.Path tempDir = java.nio.file.Files.createTempDirectory("fastfloat");
+                java.nio.file.Path tempLib = tempDir.resolve(libFileName);
+                
+                java.nio.file.Files.copy(is, tempLib, 
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                is.close();
+                
+                // Load the extracted library
+                System.load(tempLib.toAbsolutePath().toString());
+                nativeLoaded = true;
+                
+                // Cleanup on exit
+                tempLib.toFile().deleteOnExit();
+                tempDir.toFile().deleteOnExit();
+            } else {
+                // Fallback: try system library path
+                System.loadLibrary(LIBRARY_NAME);
+                nativeLoaded = true;
+            }
+        } catch (Exception e) {
+            // Native library not available - will use pure-Java fallback
+            nativeLoaded = false;
+        }
     }
     
     public static final String VERSION = "1.2.0";
@@ -268,16 +309,12 @@ public final class FastFloat {
     // === Utility ===
     
     /**
-     * Check if native library is loaded and ready.
+     * Check if native library is loaded and available.
      * 
      * @return true if native acceleration available
      */
     public static boolean isNativeAvailable() {
-        try {
-            return FastCore.isLibraryLoaded("fastfloat");
-        } catch (Exception e) {
-            return false;
-        }
+        return nativeLoaded;
     }
     
     /**

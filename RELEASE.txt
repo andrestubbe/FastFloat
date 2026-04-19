@@ -1,0 +1,143 @@
+FastFloat v1.2.0 Release Notes
+==============================
+
+🚀 Major Features
+-----------------
+
+**Dual-Mode Parsing (NEW)**
+- Short strings (≤20 chars): Pure-Java Eisel-Lemire algorithm
+- Long strings (>20 chars): Native SIMD acceleration
+- Eliminates JNI overhead for common short inputs
+
+**Zero-GC API (v1.1.0+ enhanced)**
+- ThreadLocal buffers - no allocations
+- Bit-packed results (error code + value in one long)
+- ByteBuffer API for zero-copy parsing
+
+**Performance Improvements**
+- parseFloat: ~3-5 ns (10-16× faster than Java)
+- parseDouble: ~5-8 ns (10-16× faster than Java)
+- Zero-GC path: ~3 ns, zero allocations
+- 1 GB/s throughput for batch operations
+
+**Cross-Platform Build**
+- Windows: compile.bat (Visual Studio)
+- Linux/macOS: compile.sh (GCC/Clang)
+- Auto-detects AVX2/AVX-512/FMA3
+
+**Ryu Formatting (v1.1.0+)**
+- Fastest known double-to-string algorithm
+- Special paths for common values
+
+📦 Files Included
+-----------------
+
+fastfloat-1.2.0.jar
+  - FastFloat.class (Dual-Mode Parsing)
+  - FastFloatPure.class (Pure-Java Eisel-Lemire)
+  - FastFloatBatch.class (SIMD operations)
+  - Integrated native library for Windows
+
+fastfloat.dll (Windows x64)
+  - Native SIMD implementation
+  - AVX2/AVX-512 optimized
+
+libfastfloat.so (Linux x64)
+  - GCC optimized build
+  - Auto-CPU dispatch
+
+libfastfloat.dylib (macOS x64/ARM64)
+  - Universal binary
+  - Apple Silicon support
+
+📋 API Highlights
+-----------------
+
+// Automatic dual-mode selection
+float f = FastFloat.parseFloat("3.14");        // Pure-Java (≤20 chars)
+float f2 = FastFloat.parseFloat("3.14159265358979323846");  // Native (>20)
+
+// Zero-GC fast path
+long packed = FastFloat.parseFloatZeroGC("3.14");
+if (FastFloat.unpackError(packed) == FastFloat.ERR_OK) {
+    float val = FastFloat.unpackFloat(packed);
+}
+
+// ByteBuffer zero-copy
+ByteBuffer buf = ByteBuffer.allocateDirect(1024);
+float val = FastFloat.parseFloatBuffer(buf, 0, 4);
+
+🔗 Installation
+----------------
+
+Maven (JitPack):
+<dependency>
+    <groupId>com.github.andrestubbe</groupId>
+    <artifactId>fastfloat</artifactId>
+    <version>v1.2.0</version>
+</dependency>
+
+Gradle:
+implementation 'com.github.andrestubbe:fastfloat:v1.2.0'
+
+Direct JAR download:
+See Assets below
+
+📊 Benchmarks
+-------------
+
+Operation           | Java Std | FastFloat | Speedup
+--------------------|----------|-----------|--------
+parseFloat          | ~50 ns   | ~3-5 ns   | 10-16×
+parseDouble         | ~80 ns   | ~5-8 ns   | 10-16×
+parseFloatZeroGC    | -        | ~3 ns     | Zero GC
+Batch 1000 ops      | ~50 μs   | ~3-5 μs   | 10-16×
+toString(float)     | ~100 ns  | ~10-15 ns | 6-10×
+
+Tested on: Intel i7-12700K, JDK 21, Windows 11
+
+📝 Migration from v1.0.0/v1.1.0
+--------------------------------
+
+Breaking Changes: NONE
+
+FastFloat.parseFloat(String) now automatically selects:
+- Pure-Java for strings ≤20 characters
+- Native for strings >20 characters
+
+For explicit native calls, use:
+- FastFloat.parseFloatNative(String)
+- FastFloat.parseDoubleNative(String)
+
+🎯 Use Cases
+------------
+
+- JSON parsing (Jackson, Gson replacement)
+- CSV ingestion (Apache Commons CSV replacement)
+- Telemetry data processing
+- Sensor stream parsing
+- Game engine number crunching
+- ML preprocessing pipelines
+- Financial data parsing
+- Scientific computing
+
+🔧 Build Instructions
+-----------------------
+
+See COMPILE.md for detailed build instructions:
+https://github.com/andrestubbe/FastFloat/blob/main/COMPILE.md
+
+Quick build:
+  Windows: compile.bat && mvn clean package
+  Linux:   ./compile.sh && mvn clean package
+
+📄 License
+----------
+
+MIT License - See LICENSE file
+
+---
+
+**Full Changelog**: https://github.com/andrestubbe/FastFloat/compare/v1.1.0...v1.2.0
+
+**Documentation**: https://github.com/andrestubbe/FastFloat/blob/main/README.md
