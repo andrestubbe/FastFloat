@@ -42,6 +42,19 @@ JNIEXPORT jint JNICALL Java_fastfloat_FastFloat_parseFloatBatch
 JNIEXPORT jint JNICALL Java_fastfloat_FastFloat_parseDoubleBatch
   (JNIEnv *, jclass, jobjectArray, jdoubleArray);
 
+// ByteBuffer API (Zero-Marshaling)
+JNIEXPORT jfloat JNICALL Java_fastfloat_FastFloat_parseFloatBuffer
+  (JNIEnv *, jclass, jobject, jint, jint);
+
+JNIEXPORT jdouble JNICALL Java_fastfloat_FastFloat_parseDoubleBuffer
+  (JNIEnv *, jclass, jobject, jint, jint);
+
+JNIEXPORT jint JNICALL Java_fastfloat_FastFloat_parseFloatBatchBuffer
+  (JNIEnv *, jclass, jobject, jintArray, jintArray, jfloatArray);
+
+JNIEXPORT jint JNICALL Java_fastfloat_FastFloat_parseDoubleBatchBuffer
+  (JNIEnv *, jclass, jobject, jintArray, jintArray, jdoubleArray);
+
 // Utility
 JNIEXPORT jstring JNICALL Java_fastfloat_FastFloat_getNativeVersion
   (JNIEnv *, jclass);

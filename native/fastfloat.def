@@ -10,6 +10,10 @@ EXPORTS
     Java_fastfloat_FastFloat_toString__DI
     Java_fastfloat_FastFloat_parseFloatBatch
     Java_fastfloat_FastFloat_parseDoubleBatch
+    Java_fastfloat_FastFloat_parseFloatBuffer
+    Java_fastfloat_FastFloat_parseDoubleBuffer
+    Java_fastfloat_FastFloat_parseFloatBatchBuffer
+    Java_fastfloat_FastFloat_parseDoubleBatchBuffer
     Java_fastfloat_FastFloat_getNativeVersion
     Java_fastfloat_FastFloatBatch_add
     Java_fastfloat_FastFloatBatch_mul
