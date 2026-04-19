@@ -1,0 +1,23 @@
+LIBRARY fastfloat
+EXPORTS
+    Java_fastfloat_FastFloat_parseFloat
+    Java_fastfloat_FastFloat_parseDouble
+    Java_fastfloat_FastFloat_parseFloatFast
+    Java_fastfloat_FastFloat_parseDoubleFast
+    Java_fastfloat_FastFloat_toString__F
+    Java_fastfloat_FastFloat_toString__D
+    Java_fastfloat_FastFloat_toString__FI
+    Java_fastfloat_FastFloat_toString__DI
+    Java_fastfloat_FastFloat_parseFloatBatch
+    Java_fastfloat_FastFloat_parseDoubleBatch
+    Java_fastfloat_FastFloat_getNativeVersion
+    Java_fastfloat_FastFloatBatch_add
+    Java_fastfloat_FastFloatBatch_mul
+    Java_fastfloat_FastFloatBatch_sub
+    Java_fastfloat_FastFloatBatch_div
+    Java_fastfloat_FastFloatBatch_fma
+    Java_fastfloat_FastFloatBatch_scale
+    Java_fastfloat_FastFloatBatch_bufferToFloats
+    Java_fastfloat_FastFloatBatch_floatsToBuffer
+    Java_fastfloat_FastFloatBatch_allocateAligned
+    Java_fastfloat_FastFloatBatch_isAligned
