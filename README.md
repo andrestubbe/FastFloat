@@ -1,4 +1,4 @@
-# FastFloat
+# FastFloat [ALPHA]
 
 > **Native-accelerated float/double parsing &amp; formatting for Java.**  
 > 5-20x faster than standard Java. Zero GC. Zero overhead.
