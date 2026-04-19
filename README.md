@@ -1,7 +1,6 @@
-# FastFloat
+# FastFloat — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native)
 
-> **Native-accelerated float/double parsing &amp; formatting for Java.**  
-> 10-20x faster than standard Java. Zero GC. SIMD-optimized. Cross-platform.
+> **5–12× faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting. JSON/CSV/telemetry parsing without garbage collection overhead.
 
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Maven](https://img.shields.io/badge/Maven-3.9+-orange.svg)](https://maven.apache.org)
@@ -11,14 +10,21 @@
 
 ---
 
+## Problem → Solution
+
+Java's `Float.parseFloat` and `Double.parseDouble` are slow, create garbage, and bottleneck JSON/CSV parsing. **FastFloat replaces them with a zero-GC, SIMD-optimized, native parser** that processes numbers at **1 GB/s throughput**.
+
+**Perfect for:** JSON parsing · CSV ingestion · Telemetry data · Sensor streams · Game loops · ML preprocessing
+
 ## Quick Start
 
 ```java
 import fastfloat.FastFloat;
 
-// Standard parsing - 10-20x faster than Float.parseFloat()
+// 5–12× faster than Float.parseFloat() — zero allocations
 float f = FastFloat.parseFloat("3.14159");
 double d = FastFloat.parseDouble("2.718281828459045");
+String s = FastFloat.toString(f);  // Ryu formatting
 
 // Zero-GC fast path with bit-packed result (no exceptions, no allocations)
 long packed = FastFloat.parseFloatZeroGC("3.14159");
@@ -69,6 +75,21 @@ dependencies {
     implementation 'com.github.andrestubbe:fastfloat:v1.1.0'
 }
 ```
+
+---
+
+## Features & Keywords
+
+**Core Capabilities:**
+- **Native float/double parsing** — 5-12× faster than Java standard library
+- **Zero-GC operation** — No garbage collection pauses, ideal for real-time systems
+- **SIMD batch operations** — AVX2/AVX-512 accelerated array processing
+- **ByteBuffer parsing** — Zero-copy direct memory access
+- **Ryu formatting** — Fastest known double-to-string algorithm
+- **Dual-mode parsing** — Pure-Java for short strings, native SIMD for long strings
+- **Multi-binary runtime dispatch** — Auto-selects optimal CPU instructions
+
+**Search Tags:** `fast float parsing java` · `java parse double performance` · `java float to string fast` · `java ryu float formatting` · `java json number parsing` · `java zero gc parsing` · `java simd float parsing` · `java high performance parsing` · `java native float parser` · `java fast double parser`
 
 ---
 
