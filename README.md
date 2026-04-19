@@ -1,12 +1,13 @@
-# FastFloat [ALPHA]
+# FastFloat
 
 > **Native-accelerated float/double parsing &amp; formatting for Java.**  
-> 5-20x faster than standard Java. Zero GC. Zero overhead.
+> 10-20x faster than standard Java. Zero GC. SIMD-optimized. Cross-platform.
 
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Maven](https://img.shields.io/badge/Maven-3.9+-orange.svg)](https://maven.apache.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)]()
 
 ---
 
@@ -15,19 +16,23 @@
 ```java
 import fastfloat.FastFloat;
 
-// Parsing - 5-20x faster than Float.parseFloat()
+// Standard parsing - 10-20x faster than Float.parseFloat()
 float f = FastFloat.parseFloat("3.14159");
 double d = FastFloat.parseDouble("2.718281828459045");
 
-// Formatting
-String s = FastFloat.toString(3.14159f);
-
-// Error-code API (no exceptions, fast-path)
-float[] result = new float[1];
-int err = FastFloat.parseFloatFast("3.14159", result);
-if (err == FastFloat.ERR_OK) {
-    System.out.println("Parsed: " + result[0]);
+// Zero-GC fast path with bit-packed result (no exceptions, no allocations)
+long packed = FastFloat.parseFloatZeroGC("3.14159");
+if (FastFloat.unpackError(packed) == FastFloat.ERR_OK) {
+    float value = FastFloat.unpackFloat(packed);  // Zero GC!
 }
+
+// ByteBuffer API - parse from direct buffer (zero-copy, no String allocation)
+ByteBuffer buffer = ByteBuffer.allocateDirect(32);
+buffer.put("3.14159".getBytes());
+float f2 = FastFloat.parseFloatBuffer(buffer, 0, 7);
+
+// Formatting with Ryu algorithm
+String s = FastFloat.toString(3.14159f);
 ```
 
 ---
@@ -48,7 +53,7 @@ if (err == FastFloat.ERR_OK) {
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>fastfloat</artifactId>
-        <version>v1.0.0</version>
+        <version>v1.1.0</version>
     </dependency>
 </dependencies>
 ```
@@ -61,7 +66,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:fastfloat:v1.0.0'
+    implementation 'com.github.andrestubbe:fastfloat:v1.1.0'
 }
 ```
 
@@ -77,6 +82,41 @@ dependencies {
 | `parseDouble(String)` | Parse double (native, throws on error) |
 | `parseFloatFast(String, float[])` | Error-code return, no exceptions |
 | `parseDoubleFast(String, double[])` | Error-code return, no exceptions |
+
+### Zero-GC Fast Path (v1.1.0+)
+
+| Method | Description |
+|--------|-------------|
+| `parseFloatZeroGC(String)` | Parse with bit-packed result, **zero allocations** |
+| `parseDoubleZeroGC(String)` | Parse with bit-packed result, **zero allocations** |
+| `unpackFloat(long)` | Extract float from bit-packed result |
+| `unpackError(long)` | Extract error code from bit-packed result |
+
+**Usage:**
+```java
+long packed = FastFloat.parseFloatZeroGC("3.14159");
+if (FastFloat.unpackError(packed) == FastFloat.ERR_OK) {
+    float value = FastFloat.unpackFloat(packed);  // Zero GC!
+}
+```
+
+### ByteBuffer API (v1.1.0+) - Zero Copy
+
+Parse directly from memory without String allocation:
+
+| Method | Description |
+|--------|-------------|
+| `parseFloatBuffer(ByteBuffer, offset, len)` | Parse from direct ByteBuffer |
+| `parseDoubleBuffer(ByteBuffer, offset, len)` | Parse from direct ByteBuffer |
+| `parseFloatBatchBuffer(...)` | Batch parse with offsets (one JNI call) |
+| `parseDoubleBatchBuffer(...)` | Batch parse with offsets (one JNI call) |
+
+**Usage:**
+```java
+ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
+// ... fill with ASCII float strings ...
+float val = FastFloat.parseFloatBuffer(buffer, 0, 7);
+```
 
 ### Formatting
 
@@ -116,12 +156,23 @@ FastFloatBatch.fma(a, b, c, out);  // out = a*b + c
 
 | Operation | Java Standard | FastFloat | Speedup |
 |-----------|---------------|-----------|---------|
-| parseFloat | ~50 ns/op | ~5 ns/op | **10x** |
-| parseDouble | ~80 ns/op | ~8 ns/op | **10x** |
-| toString(float) | ~100 ns/op | ~15 ns/op | **6.7x** |
-| Batch 1000 ops | ~50 μs | ~5 μs | **10x** |
+| `parseFloat` | ~50 ns/op | ~3-5 ns/op | **10-16x** |
+| `parseDouble` | ~80 ns/op | ~5-8 ns/op | **10-16x** |
+| `parseFloatZeroGC` | - | ~3 ns/op | **Zero GC** |
+| `parseFloatBuffer` | - | ~2-4 ns/op | **No String alloc** |
+| `toString(float)` | ~100 ns/op | ~10-15 ns/op | **6-10x** |
+| Batch 1000 ops | ~50 μs | ~3-5 μs | **10-16x** |
 
-*Benchmarks on Intel i7-12700K, JDK 21. Your results may vary.*
+*Benchmarks on Intel i7-12700K, JDK 21. Results vary by CPU and input patterns.*
+
+### Why FastFloat is Faster
+
+- **Eisel-Lemire Algorithm**: State-of-the-art float parsing (used in GCC, Chrome, MySQL)
+- **SIMD Acceleration**: AVX2/AVX-512 batch operations
+- **Zero-GC Path**: ThreadLocal buffers eliminate allocations
+- **ByteBuffer API**: Direct memory access without String marshaling
+- **Ryu Formatting**: Fastest known double-to-string algorithm
+- **Branchless Parsing**: Optimized for modern CPU branch predictors
 
 ---
 
@@ -134,12 +185,15 @@ fastfloat/
 │   └── FastFloatBatch.java       # SIMD batch ops
 ├── native/                         # C++ JNI code
 │   ├── fastfloat.h
-│   ├── fastfloat.cpp
-│   └── fastfloat.def             # JNI exports
+│   ├── fastfloat.cpp             # Main implementation
+│   ├── fastfloat_ryu.cpp         # Ryu formatting algorithm
+│   ├── fastfloat_ryu.h
+│   └── fastfloat.def             # JNI exports (Windows)
 ├── examples/
 │   ├── 00-basic-usage/           # Hello World demo
 │   └── 10-benchmark/             # JMH benchmarks
-├── compile.bat                   # Build native DLL
+├── compile.bat                   # Build native DLL (Windows)
+├── compile.sh                    # Build native library (Linux/macOS)
 └── pom.xml
 ```
 
@@ -151,17 +205,26 @@ fastfloat/
 
 - JDK 17+
 - Maven 3.9+
-- Visual Studio 2019+ (Windows)
+- **Windows:** Visual Studio 2019+ or Build Tools
+- **Linux:** GCC 9+ or Clang 10+
+- **macOS:** Xcode Command Line Tools
 
 ### Build
 
+**Windows:**
 ```bash
-# Build native DLL (Windows)
 compile.bat
-
-# Build JAR
 mvn clean package
 ```
+
+**Linux/macOS:**
+```bash
+chmod +x compile.sh
+./compile.sh
+mvn clean package
+```
+
+The build script auto-detects CPU features (AVX2, AVX-512, FMA3) and compiles with optimal flags (`-O3 -march=native -ffast-math`).
 
 ### Run Examples
 
