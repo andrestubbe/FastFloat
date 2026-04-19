@@ -199,32 +199,28 @@ fastfloat/
 
 ---
 
-## Building from Source
+## Installation & Building
 
-### Prerequisites
+### Quick Install
 
-- JDK 17+
-- Maven 3.9+
-- **Windows:** Visual Studio 2019+ or Build Tools
-- **Linux:** GCC 9+ or Clang 10+
-- **macOS:** Xcode Command Line Tools
+**Download pre-built JAR:** See [COMPILE.md](COMPILE.md#installation-options)
 
-### Build
-
-**Windows:**
-```bash
-compile.bat
-mvn clean package
+**JitPack:**
+```xml
+<dependency>
+    <groupId>com.github.andrestubbe</groupId>
+    <artifactId>fastfloat</artifactId>
+    <version>v1.2.0</version>
+</dependency>
 ```
 
-**Linux/macOS:**
-```bash
-chmod +x compile.sh
-./compile.sh
-mvn clean package
-```
+### Building from Source
 
-The build script auto-detects CPU features (AVX2, AVX-512, FMA3) and compiles with optimal flags (`-O3 -march=native -ffast-math`).
+See [COMPILE.md](COMPILE.md) for detailed build instructions:
+- Windows: `compile.bat`
+- Linux/macOS: `./compile.sh`
+- Cross-platform build options
+- Compiler optimization flags
 
 ### Run Examples
 
