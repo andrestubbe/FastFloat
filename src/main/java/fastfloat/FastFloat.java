@@ -25,7 +25,7 @@ public final class FastFloat {
         FastCore.loadLibrary("fastfloat");
     }
     
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.2.0";
     
     // Error codes (returned instead of exceptions for fast-path)
     public static final int ERR_OK = 0;
@@ -39,25 +39,66 @@ public final class FastFloat {
     private static final ThreadLocal<double[]> DOUBLE_RESULT = ThreadLocal.withInitial(() -> new double[1]);
     private static final ThreadLocal<char[]> CHAR_BUFFER = ThreadLocal.withInitial(() -> new char[64]);
     
-    // === Native Parsing Methods ===
+    // === DUAL-MODE PARSING (v1.2.0+) ===
+    // Pure-Java Eisel-Lemire for short strings (≤20 chars) - avoids JNI overhead
+    // Native for long strings (>20 chars) - maximum throughput
     
     /**
-     * Parse float from string (native, zero-GC).
+     * Parse float from string with automatic dual-mode selection.
+     * 
+     * <p><b>Dual-Mode Strategy (v1.2.0+):</b></p>
+     * <ul>
+     *   <li>Strings ≤20 chars: Pure-Java Eisel-Lemire (avoids JNI overhead)</li>
+     *   <li>Strings >20 chars: Native SIMD (maximum throughput)</li>
+     * </ul>
      * 
      * @param s string to parse
      * @return parsed float value
      * @throws NumberFormatException if parsing fails
      */
-    public static native float parseFloat(String s);
+    public static float parseFloat(String s) {
+        // Fast path: Pure-Java for short strings where JNI overhead dominates
+        if (s != null && s.length() <= FastFloatPure.FAST_PATH_MAX_LENGTH) {
+            return FastFloatPure.parseFloat(s);
+        }
+        // Long strings: Native SIMD for maximum throughput
+        return parseFloatNative(s);
+    }
     
     /**
-     * Parse double from string (native, zero-GC).
+     * Parse double from string with automatic dual-mode selection.
      * 
      * @param s string to parse
      * @return parsed double value
      * @throws NumberFormatException if parsing fails
      */
-    public static native double parseDouble(String s);
+    public static double parseDouble(String s) {
+        if (s != null && s.length() <= FastFloatPure.FAST_PATH_MAX_LENGTH) {
+            return FastFloatPure.parseDouble(s);
+        }
+        return parseDoubleNative(s);
+    }
+    
+    // === Native Parsing Methods (for long strings or explicit native call) ===
+    
+    /**
+     * Parse float from string using native SIMD (always native, no pure-Java fallback).
+     * Use this for guaranteed native performance when you know strings are long.
+     * 
+     * @param s string to parse
+     * @return parsed float value
+     * @throws NumberFormatException if parsing fails
+     */
+    public static native float parseFloatNative(String s);
+    
+    /**
+     * Parse double from string using native SIMD (always native).
+     * 
+     * @param s string to parse
+     * @return parsed double value
+     * @throws NumberFormatException if parsing fails
+     */
+    public static native double parseDoubleNative(String s);
     
     /**
      * Parse float with error code (no exceptions, fast-path).

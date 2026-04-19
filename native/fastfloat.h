@@ -9,11 +9,11 @@ extern "C" {
 
 // JNI function declarations for FastFloat
 
-// Parsing
-JNIEXPORT jfloat JNICALL Java_fastfloat_FastFloat_parseFloat
+// Native Parsing (v1.2.0+ - renamed from parseFloat/parseDouble)
+JNIEXPORT jfloat JNICALL Java_fastfloat_FastFloat_parseFloatNative
   (JNIEnv *, jclass, jstring);
 
-JNIEXPORT jdouble JNICALL Java_fastfloat_FastFloat_parseDouble
+JNIEXPORT jdouble JNICALL Java_fastfloat_FastFloat_parseDoubleNative
   (JNIEnv *, jclass, jstring);
 
 JNIEXPORT jint JNICALL Java_fastfloat_FastFloat_parseFloatFast

@@ -1,7 +1,7 @@
 LIBRARY fastfloat
 EXPORTS
-    Java_fastfloat_FastFloat_parseFloat
-    Java_fastfloat_FastFloat_parseDouble
+    Java_fastfloat_FastFloat_parseFloatNative
+    Java_fastfloat_FastFloat_parseDoubleNative
     Java_fastfloat_FastFloat_parseFloatFast
     Java_fastfloat_FastFloat_parseDoubleFast
     Java_fastfloat_FastFloat_toString__F

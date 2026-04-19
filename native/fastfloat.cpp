@@ -273,7 +273,7 @@ static int formatDoubleImpl(double val, char* buf, int precision) {
 // JNI Implementations
 // ============================================================================
 
-JNIEXPORT jfloat JNICALL Java_fastfloat_FastFloat_parseFloat
+JNIEXPORT jfloat JNICALL Java_fastfloat_FastFloat_parseFloatNative
   (JNIEnv* env, jclass cls, jstring str) {
     if (!str) {
         jclass ex = env->FindClass("java/lang/NumberFormatException");
@@ -295,7 +295,7 @@ JNIEXPORT jfloat JNICALL Java_fastfloat_FastFloat_parseFloat
     return result;
 }
 
-JNIEXPORT jdouble JNICALL Java_fastfloat_FastFloat_parseDouble
+JNIEXPORT jdouble JNICALL Java_fastfloat_FastFloat_parseDoubleNative
   (JNIEnv* env, jclass cls, jstring str) {
     if (!str) {
         jclass ex = env->FindClass("java/lang/NumberFormatException");
