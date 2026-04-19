@@ -1,3 +1,57 @@
+# Installation Options
+
+## Option 1: Download Pre-built JAR (Recommended)
+
+The easiest way to use FastFloat is downloading the pre-built JAR with integrated native library:
+
+### GitHub Releases
+
+Download the latest release: **[Releases Page](https://github.com/andrestubbe/FastFloat/releases)**
+
+```bash
+# Download JAR with integrated DLL/SO/DYLIB
+wget https://github.com/andrestubbe/FastFloat/releases/download/v1.2.0/fastfloat-1.2.0.jar
+
+# Or download JAR + separate native library
+wget https://github.com/andrestubbe/FastFloat/releases/download/v1.2.0/fastfloat-1.2.0.jar
+wget https://github.com/andrestubbe/FastFloat/releases/download/v1.2.0/fastfloat.dll     # Windows
+wget https://github.com/andrestubbe/FastFloat/releases/download/v1.2.0/libfastfloat.so   # Linux
+wget https://github.com/andrestubbe/FastFloat/releases/download/v1.2.0/libfastfloat.dylib # macOS
+```
+
+### Maven (JitPack)
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>fastfloat</artifactId>
+        <version>v1.2.0</version>
+    </dependency>
+</dependencies>
+```
+
+### Gradle (JitPack)
+
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.andrestubbe:fastfloat:v1.2.0'
+}
+```
+
+---
+
 # Building from Source
 
 ## Prerequisites
