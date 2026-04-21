@@ -220,35 +220,9 @@ fastfloat/
 
 ---
 
-## Installation & Building
+## Build from Source
 
-### Quick Install
-
-**Download pre-built JAR:** See [COMPILE.md](COMPILE.md#installation-options)
-
-**JitPack:**
-```xml
-<dependency>
-    <groupId>com.github.andrestubbe</groupId>
-    <artifactId>fastfloat</artifactId>
-    <version>v1.2.0</version>
-</dependency>
-```
-
-### Building from Source
-
-See [COMPILE.md](COMPILE.md) for detailed build instructions:
-- Windows: `compile.bat`
-- Linux/macOS: `./compile.sh`
-- Cross-platform build options
-- Compiler optimization flags
-
-### Run Examples
-
-```bash
-cd examples/00-basic-usage
-mvn compile exec:java
-```
+See [COMPILE.md](COMPILE.md) for detailed build instructions.
 
 ---
 
