@@ -1,4 +1,4 @@
-# FastFloat — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native)
+# FastFloat — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native) [ALPHA]
 
 > **5–12× faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting. JSON/CSV/telemetry parsing without garbage collection overhead.
 
