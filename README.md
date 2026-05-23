@@ -45,7 +45,8 @@ String s = FastFloat.toString(3.14159f);
 
 ## Installation
 
-### JitPack (Recommended)
+### Option 1: Maven (Recommended)
+Add the JitPack repository and the dependencies to your `pom.xml`:
 
 ```xml
 <repositories>
@@ -56,25 +57,42 @@ String s = FastFloat.toString(3.14159f);
 </repositories>
 
 <dependencies>
+    <!-- FastFloat Library -->
+    <dependency>
+        <groupId>io.github.andrestubbe</groupId>
+        <artifactId>fastfloat</artifactId>
+        <version>0.1.0</version>
+    </dependency>
+
+    <!-- FastCore (Required Native Loader) -->
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
-        <artifactId>fastfloat</artifactId>
-        <version>v1.1.0</version>
+        <artifactId>fastcore</artifactId>
+        <version>v0.1.0</version>
     </dependency>
 </dependencies>
 ```
 
-### Gradle
-
+### Option 2: Gradle (via JitPack)
 ```groovy
 repositories {
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:fastfloat:v1.1.0'
+    implementation 'io.github.andrestubbe:fastfloat:0.1.0'
+    implementation 'com.github.andrestubbe:fastcore:v0.1.0'
 }
 ```
+
+### Option 3: Direct Download (No Build Tool)
+Download the latest JARs directly to add them to your classpath:
+
+1.  📦 **[fastfloat-v0.1.0.jar](https://github.com/andrestubbe/fastfloat/releases)** (The Core Library)
+2.  ⚙️ **[fastcore-v0.1.0.jar](https://github.com/andrestubbe/FastCore/releases)** (The Mandatory Native Loader)
+
+> [!IMPORTANT]
+> Both JARs must be in your classpath for the native JNI calls to function correctly.
 
 ---
 
@@ -269,3 +287,6 @@ MIT License — See [LICENSE](LICENSE) for details.
 ---
 
 **Part of the FastJava Ecosystem** — *Making the JVM faster.*
+
+
+
