@@ -32,13 +32,13 @@
         <dependency>
             <groupId>com.github.andrestubbe</groupId>
             <artifactId>fastfloat</artifactId>
-            <version>v1.0.0-SNAPSHOT</version>
+            <version>0.1.0</version>
         </dependency>
         <!-- FastCore -->
         <dependency>
             <groupId>com.github.andrestubbe</groupId>
             <artifactId>fastcore</artifactId>
-            <version>v1.0.0</version>
+            <version>0.1.0</version>
         </dependency>
         
         <!-- JMH -->
@@ -80,3 +80,5 @@
         </plugins>
     </build>
 </project>
+
+
