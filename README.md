@@ -48,7 +48,7 @@ String s = FastFloat.toString(3.14159f);
 ### Option 1: Maven (Recommended)
 Add the JitPack repository and the dependencies to your `pom.xml`:
 
-```xml
+`xml
 <repositories>
     <repository>
         <id>jitpack.io</id>
@@ -59,11 +59,10 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
 <dependencies>
     <!-- FastFloat Library -->
     <dependency>
-        <groupId>io.github.andrestubbe</groupId>
+        <groupId>com.github.andrestubbe</groupId>
         <artifactId>fastfloat</artifactId>
-        <version>0.1.0</version>
+        <version>v0.1.0</version>
     </dependency>
-
     <!-- FastCore (Required Native Loader) -->
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
@@ -71,30 +70,29 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
         <version>v0.1.0</version>
     </dependency>
 </dependencies>
-```
+`
 
 ### Option 2: Gradle (via JitPack)
-```groovy
+`groovy
 repositories {
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'io.github.andrestubbe:fastfloat:0.1.0'
+    implementation 'com.github.andrestubbe:.1.0'
     implementation 'com.github.andrestubbe:fastcore:v0.1.0'
 }
-```
+`
 
 ### Option 3: Direct Download (No Build Tool)
 Download the latest JARs directly to add them to your classpath:
 
-1.  📦 **[fastfloat-v0.1.0.jar](https://github.com/andrestubbe/fastfloat/releases)** (The Core Library)
-2.  ⚙️ **[fastcore-v0.1.0.jar](https://github.com/andrestubbe/FastCore/releases)** (The Mandatory Native Loader)
+1. 📦 **[fastfloat-v0.1.0.jar](https://github.com/andrestubbe/FastFloat/releases/download/v0.1.0/fastfloat-v0.1.0.jar)** (The Core Library)
+2. ⚙️ **[fastcore-v0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/v0.1.0/fastcore-v0.1.0.jar)** (The Mandatory Native Loader)
 
 > [!IMPORTANT]
-> Both JARs must be in your classpath for the native JNI calls to function correctly.
+> All JARs must be in your classpath for the native JNI calls to function correctly.
 
----
 
 ## Features & Keywords
 
