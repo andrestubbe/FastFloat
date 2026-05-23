@@ -1,6 +1,6 @@
-# FastFloat — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native) [ALPHA]
+﻿# FastFloat â€” Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native) [ALPHA]
 
-> **5–12× faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting. JSON/CSV/telemetry parsing without garbage collection overhead.
+> **5â€“12Ã— faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting. JSON/CSV/telemetry parsing without garbage collection overhead.
 
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Maven](https://img.shields.io/badge/Maven-3.9+-orange.svg)](https://maven.apache.org)
@@ -10,18 +10,18 @@
 
 ---
 
-## Problem → Solution
+## Problem â†’ Solution
 
 Java's `Float.parseFloat` and `Double.parseDouble` are slow, create garbage, and bottleneck JSON/CSV parsing. **FastFloat replaces them with a zero-GC, SIMD-optimized, native parser** that processes numbers at **1 GB/s throughput**.
 
-**Perfect for:** JSON parsing · CSV ingestion · Telemetry data · Sensor streams · Game loops · ML preprocessing
+**Perfect for:** JSON parsing Â· CSV ingestion Â· Telemetry data Â· Sensor streams Â· Game loops Â· ML preprocessing
 
 ## Quick Start
 
 ```java
 import fastfloat.FastFloat;
 
-// 5–12× faster than Float.parseFloat() — zero allocations
+// 5â€“12Ã— faster than Float.parseFloat() â€” zero allocations
 float f = FastFloat.parseFloat("3.14159");
 double d = FastFloat.parseDouble("2.718281828459045");
 String s = FastFloat.toString(f);  // Ryu formatting
@@ -48,7 +48,7 @@ String s = FastFloat.toString(3.14159f);
 ### Option 1: Maven (Recommended)
 Add the JitPack repository and the dependencies to your `pom.xml`:
 
-`xml
+```xml
 <repositories>
     <repository>
         <id>jitpack.io</id>
@@ -63,6 +63,7 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
         <artifactId>fastfloat</artifactId>
         <version>v0.1.0</version>
     </dependency>
+
     <!-- FastCore (Required Native Loader) -->
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
@@ -70,19 +71,19 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
         <version>v0.1.0</version>
     </dependency>
 </dependencies>
-`
+```
 
 ### Option 2: Gradle (via JitPack)
-`groovy
+```groovy
 repositories {
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:.1.0'
+    implementation 'com.github.andrestubbe:fastfloat:v0.1.0'
     implementation 'com.github.andrestubbe:fastcore:v0.1.0'
 }
-`
+```
 
 ### Option 3: Direct Download (No Build Tool)
 Download the latest JARs directly to add them to your classpath:
@@ -97,15 +98,15 @@ Download the latest JARs directly to add them to your classpath:
 ## Features & Keywords
 
 **Core Capabilities:**
-- **Native float/double parsing** — 5-12× faster than Java standard library
-- **Zero-GC operation** — No garbage collection pauses, ideal for real-time systems
-- **SIMD batch operations** — AVX2/AVX-512 accelerated array processing
-- **ByteBuffer parsing** — Zero-copy direct memory access
-- **Ryu formatting** — Fastest known double-to-string algorithm
-- **Dual-mode parsing** — Pure-Java for short strings, native SIMD for long strings
-- **Multi-binary runtime dispatch** — Auto-selects optimal CPU instructions
+- **Native float/double parsing** â€” 5-12Ã— faster than Java standard library
+- **Zero-GC operation** â€” No garbage collection pauses, ideal for real-time systems
+- **SIMD batch operations** â€” AVX2/AVX-512 accelerated array processing
+- **ByteBuffer parsing** â€” Zero-copy direct memory access
+- **Ryu formatting** â€” Fastest known double-to-string algorithm
+- **Dual-mode parsing** â€” Pure-Java for short strings, native SIMD for long strings
+- **Multi-binary runtime dispatch** â€” Auto-selects optimal CPU instructions
 
-**Search Tags:** `fast float parsing java` · `java parse double performance` · `java float to string fast` · `java ryu float formatting` · `java json number parsing` · `java zero gc parsing` · `java simd float parsing` · `java high performance parsing` · `java native float parser` · `java fast double parser`
+**Search Tags:** `fast float parsing java` Â· `java parse double performance` Â· `java float to string fast` Â· `java ryu float formatting` Â· `java json number parsing` Â· `java zero gc parsing` Â· `java simd float parsing` Â· `java high performance parsing` Â· `java native float parser` Â· `java fast double parser`
 
 ---
 
@@ -198,7 +199,7 @@ FastFloatBatch.fma(a, b, c, out);  // out = a*b + c
 | `parseFloatZeroGC` | - | ~3 ns/op | **Zero GC** |
 | `parseFloatBuffer` | - | ~2-4 ns/op | **No String alloc** |
 | `toString(float)` | ~100 ns/op | ~10-15 ns/op | **6-10x** |
-| Batch 1000 ops | ~50 μs | ~3-5 μs | **10-16x** |
+| Batch 1000 ops | ~50 Î¼s | ~3-5 Î¼s | **10-16x** |
 
 *Benchmarks on Intel i7-12700K, JDK 21. Results vary by CPU and input patterns.*
 
@@ -217,21 +218,21 @@ FastFloatBatch.fma(a, b, c, out);  // out = a*b + c
 
 ```
 fastfloat/
-├── src/main/java/fastfloat/     # Core API
-│   ├── FastFloat.java            # Parsing & formatting
-│   └── FastFloatBatch.java       # SIMD batch ops
-├── native/                         # C++ JNI code
-│   ├── fastfloat.h
-│   ├── fastfloat.cpp             # Main implementation
-│   ├── fastfloat_ryu.cpp         # Ryu formatting algorithm
-│   ├── fastfloat_ryu.h
-│   └── fastfloat.def             # JNI exports (Windows)
-├── examples/
-│   ├── 00-basic-usage/           # Hello World demo
-│   └── 10-benchmark/             # JMH benchmarks
-├── compile.bat                   # Build native DLL (Windows)
-├── compile.sh                    # Build native library (Linux/macOS)
-└── pom.xml
+â”œâ”€â”€ src/main/java/fastfloat/     # Core API
+â”‚   â”œâ”€â”€ FastFloat.java            # Parsing & formatting
+â”‚   â””â”€â”€ FastFloatBatch.java       # SIMD batch ops
+â”œâ”€â”€ native/                         # C++ JNI code
+â”‚   â”œâ”€â”€ fastfloat.h
+â”‚   â”œâ”€â”€ fastfloat.cpp             # Main implementation
+â”‚   â”œâ”€â”€ fastfloat_ryu.cpp         # Ryu formatting algorithm
+â”‚   â”œâ”€â”€ fastfloat_ryu.h
+â”‚   â””â”€â”€ fastfloat.def             # JNI exports (Windows)
+â”œâ”€â”€ examples/
+â”‚   â”œâ”€â”€ 00-basic-usage/           # Hello World demo
+â”‚   â””â”€â”€ 10-benchmark/             # JMH benchmarks
+â”œâ”€â”€ compile.bat                   # Build native DLL (Windows)
+â”œâ”€â”€ compile.sh                    # Build native library (Linux/macOS)
+â””â”€â”€ pom.xml
 ```
 
 ---
@@ -280,11 +281,11 @@ FastMath.setSIMDBackend(FastFloatBatch.class);
 
 ## License
 
-MIT License — See [LICENSE](LICENSE) for details.
+MIT License â€” See [LICENSE](LICENSE) for details.
 
 ---
 
-**Part of the FastJava Ecosystem** — *Making the JVM faster.*
+**Part of the FastJava Ecosystem** â€” *Making the JVM faster.*
 
 
 
