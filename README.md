@@ -1,12 +1,17 @@
-﻿# FastFloat — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native) [ALPHA]
-
-> **5–12× faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting. JSON/CSV/telemetry parsing without garbage collection overhead.
+﻿# FastFloat v0.1.0 [ALPHA] — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native)
 
 [![Status](https://img.shields.io/badge/status-v0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastFloat/releases/tag/v0.1.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
 [![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe)
+
+> **5–12× faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting. JSON/CSV/telemetry parsing without garbage collection overhead.
+
+
+[![FastKeyboard Showcase](docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
+
+
 
 ---
 
@@ -15,6 +20,7 @@
 Java's `Float.parseFloat` and `Double.parseDouble` are slow, create garbage, and bottleneck JSON/CSV parsing. **FastFloat replaces them with a zero-GC, SIMD-optimized, native parser** that processes numbers at **1 GB/s throughput**.
 
 **Perfect for:** JSON parsing · CSV ingestion · Telemetry data · Sensor streams · Game loops · ML preprocessing
+
 
 ## Quick Start
 
