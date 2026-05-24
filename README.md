@@ -287,11 +287,17 @@ FastMath.setSIMDBackend(FastFloatBatch.class);
 
 ## License
 
-MIT License — See [LICENSE](LICENSE) for details.
+MIT License — See [LICENSE](LICENSE) file for details.
 
 ---
 
-**Part of the FastJava Ecosystem** — *Making the JVM faster.*
+## Related Projects
 
+- [FastFileIndex](https://github.com/andrestubbe/FastFileIndex) — Ultra-fast filesystem scanner
+- [FastTheme](https://github.com/andrestubbe/FastTheme) — High-performance native window styling
+- [FastThumb](https://github.com/andrestubbe/FastThumb) — Native Shell Image Engine
 
+---
+
+**Part of the FastJava Ecosystem** — *Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋*
 
