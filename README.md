@@ -21,6 +21,7 @@ Java's `Float.parseFloat` and `Double.parseDouble` are slow, create garbage, and
 
 ## Table of Contents
 
+- [Quick Start](#quick-start)
 - [TODO](#installation)
 
 ---
