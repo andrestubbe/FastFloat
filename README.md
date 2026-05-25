@@ -6,8 +6,8 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
 [![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe)
 
-> **5–12× faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting.
-> JSON/CSV/telemetry parsing without garbage collection overhead.
+**⚡ 5–12× faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting.
+JSON/CSV/telemetry parsing without garbage collection overhead.
 
 Java's `Float.parseFloat` and `Double.parseDouble` are slow, create garbage, and bottleneck JSON/CSV parsing. *
 *FastFloat replaces them with a zero-GC, SIMD-optimized, native parser** that processes numbers at **1 GB/s throughput
