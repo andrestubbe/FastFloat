@@ -1,4 +1,4 @@
-﻿# FastFloat 0.1.0 [ALPHA] — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native)
+# FastFloat 0.1.0 [ALPHA-2026-06] — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native)
 
 [![Status](https://img.shields.io/badge/status-0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastFloat/releases/tag/0.1.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
