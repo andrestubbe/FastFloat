@@ -1,4 +1,4 @@
-﻿# FastFloat 0.1.0 [ALPHA-2026-05-17] — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native)
+# FastFloat 0.1.0 [ALPHA-2026-05-17] — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native)
 
 [![Status](https://img.shields.io/badge/status-0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastFloat/releases/tag/0.1.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,9 +11,7 @@
 **⚡ 5–12× faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting.
 JSON/CSV/telemetry parsing without garbage collection overhead.
 
-Java's `Float.parseFloat` and `Double.parseDouble` are slow, create garbage, and bottleneck JSON/CSV parsing. *
-*FastFloat replaces them with a zero-GC, SIMD-optimized, native parser** that processes numbers at **1 GB/s throughput
-**.
+Java's `Float.parseFloat` and `Double.parseDouble` are slow, create garbage, and bottleneck JSON/CSV parsing. **FastFloat replaces them with a zero-GC, SIMD-optimized, native parser** that processes numbers at **1 GB/s throughput**.
 
 **Perfect for:** JSON parsing · CSV ingestion · Telemetry data · Sensor streams · Game loops · ML preprocessing
 
@@ -26,7 +24,15 @@ Java's `Float.parseFloat` and `Double.parseDouble` are slow, create garbage, and
 ## Table of Contents
 
 - [Quick Start](#quick-start)
-- [TODO](#installation)
+- [Installation](#installation)
+- [Features](#features--keywords)
+- [API Reference](#api-reference)
+- [Performance](#performance)
+- [Project Structure](#project-structure)
+- [Build from Source](#build-from-source)
+- [Error Codes](#error-codes)
+- [Integration](#integration)
+- [License](#license)
 
 ---
 
@@ -104,10 +110,8 @@ dependencies {
 
 Download the latest JARs directly to add them to your classpath:
 
-1. 📦 **[fastfloat-0.1.0.jar](https://github.com/andrestubbe/FastFloat/releases/download/0.1.0/fastfloat-0.1.0.jar)
-   ** (The Core Library)
-2. ⚙️ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (
-   The Mandatory Native Loader)
+1. 📦 **[fastfloat-0.1.0.jar](https://github.com/andrestubbe/FastFloat/releases/download/0.1.0/fastfloat-0.1.0.jar)** (The Core Library)
+2. ⚙️ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (The Mandatory Native Loader)
 
 ---
 
@@ -122,10 +126,6 @@ Download the latest JARs directly to add them to your classpath:
 - **Ryu formatting** — Fastest known double-to-string algorithm
 - **Dual-mode parsing** — Pure-Java for short strings, native SIMD for long strings
 - **Multi-binary runtime dispatch** — Auto-selects optimal CPU instructions
-
-**Search Tags:** `fast float parsing java` · `java parse double performance` · `java float to string fast` ·
-`java ryu float formatting` · `java json number parsing` · `java zero gc parsing` · `java simd float parsing` ·
-`java high performance parsing` · `java native float parser` · `java fast double parser`
 
 ---
 
@@ -153,10 +153,8 @@ Download the latest JARs directly to add them to your classpath:
 
 ```java
 long packed = FastFloat.parseFloatZeroGC("3.14159");
-if(FastFloat.
-
-unpackError(packed) ==FastFloat.ERR_OK){
-float value = FastFloat.unpackFloat(packed);  // Zero GC!
+if (FastFloat.unpackError(packed) == FastFloat.ERR_OK) {
+    float value = FastFloat.unpackFloat(packed);  // Zero GC!
 }
 ```
 
@@ -206,15 +204,9 @@ float[] a = {1.0f, 2.0f, 3.0f};
 float[] b = {4.0f, 5.0f, 6.0f};
 float[] out = new float[3];
 
-FastFloatBatch.
-
-add(a, b, out);  // out = {5.0, 7.0, 9.0}
-FastFloatBatch.
-
-mul(a, b, out);  // out = {4.0, 10.0, 18.0}
-FastFloatBatch.
-
-fma(a, b, c, out);  // out = a*b + c
+FastFloatBatch.add(a, b, out);  // out = {5.0, 7.0, 9.0}
+FastFloatBatch.mul(a, b, out);  // out = {4.0, 10.0, 18.0}
+FastFloatBatch.fma(a, b, c, out);  // out = a*b + c
 ```
 
 ---
@@ -295,9 +287,7 @@ FastFloat provides the numeric backend for FastJSON parsing:
 ```java
 // FastJSON automatically uses FastFloat when available
 FastJSON json = new FastJSON();
-json.
-
-useFastFloatBackend(true);
+json.useFastFloatBackend(true);
 ```
 
 ### FastMath
