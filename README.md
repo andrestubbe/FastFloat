@@ -12,7 +12,7 @@
 
 `FastFloat` provides high-performance native float and double parsing and formatting for Java, replacing slow string allocations with native AVX2 SIMD vector operations.
 
-![docs/screenshot.png](docs/screenshot.png)
+![Showcase](https://raw.githubusercontent.com/andrestubbe/FastFloat/main/docs/screenshot.png)
 
 ---
 
