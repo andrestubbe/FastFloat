@@ -1,69 +1,126 @@
-# FastFloat 0.1.0 [ALPHA-2026-05-17] — Ultra-fast float/double parsing & formatting for Java (SIMD, zero-GC, native)
+# FastFloat 0.1.1 [ALPHA-2026-08] — Ultra-Fast Native SIMD Float Parsing & Formatting for Java
 
-[![Status](https://img.shields.io/badge/status-0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastFloat/releases/tag/0.1.0)
+[![Status](https://img.shields.io/badge/status-0.1.1-brightgreen.svg)](https://github.com/andrestubbe/FastFloat/releases/tag/0.1.1)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe/FastFloat)
+[![JitPack](https://img.shields.io/badge/JitPack-0.1.1-green.svg)](https://jitpack.io/#andrestubbe/FastFloat)
 
 ---
 
-**⚡ 5–12× faster than Java's Float.parseFloat / Double.parseDouble.** Zero-GC. SIMD-accelerated. Ryu-powered formatting.
-JSON/CSV/telemetry parsing without garbage collection overhead.
+**⚡ 5.1× faster than standard Java's Float.parseFloat / Double.parseDouble.** Zero GC. SIMD accelerated. Ryu algorithm formatting.
 
-Java's `Float.parseFloat` and `Double.parseDouble` are slow, create garbage, and bottleneck JSON/CSV parsing. **FastFloat replaces them with a zero-GC, SIMD-optimized, native parser** that processes numbers at **1 GB/s throughput**.
+`FastFloat` provides high-performance native float and double parsing and formatting for Java, replacing slow string allocations with native AVX2 SIMD vector operations.
 
-**Perfect for:** JSON parsing · CSV ingestion · Telemetry data · Sensor streams · Game loops · ML preprocessing
+[![Showcase](docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
 
 ---
 
-[![FastKeyboard Showcase](docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
+## Quick Start — Example
+
+```java
+import fastfloat.FastFloat;
+import java.nio.ByteBuffer;
+
+public class Demo {
+    public static void main(String[] args) {
+        // 1. 5.1× faster parsing — zero allocations
+        float f = FastFloat.parseFloat("3.14159");
+        double d = FastFloat.parseDouble("2.718281828459045");
+
+        // 2. Zero-GC fast path (no exceptions, packed error/value result)
+        long packed = FastFloat.parseFloatZeroGC("3.14159");
+        if (FastFloat.unpackError(packed) == FastFloat.ERR_OK) {
+            float value = FastFloat.unpackFloat(packed);
+        }
+
+        // 3. Ryu high-speed float/double formatting
+        String formatted = FastFloat.toString(f);
+    }
+}
+```
 
 ---
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
+- [Why FastFloat?](#why-fastfloat)
+- [Key Features](#key-features)
+- [Real-World Use Cases](#real-world-use-cases)
+- [Performance Benchmarks](#performance-benchmarks)
+- [Architecture Overview](#architecture-overview)
+- [API Quick Reference](#api-quick-reference)
 - [Installation](#installation)
-- [Features](#features--keywords)
-- [API Reference](#api-reference)
-- [Performance](#performance)
-- [Project Structure](#project-structure)
-- [Build from Source](#build-from-source)
-- [Error Codes](#error-codes)
-- [Integration](#integration)
+- [Documentation](#documentation)
+- [Platform Support](#platform-support)
 - [License](#license)
+- [Related Projects](#related-projects)
 
 ---
 
-## Quick Start
+## Why FastFloat?
 
-```java
-import fastfloat.FastFloat;
+Standard Java `Float.parseFloat()` and `Double.parseDouble()` rely on complex, slow string allocations and Exception-throwing error handling. `FastFloat` addresses this by:
 
-public class Demo {
-    public static void main(String[] args) {
-        // 5–12× faster than Float.parseFloat() — zero allocations
-        float f = FastFloat.parseFloat("3.14159");
-        double d = FastFloat.parseDouble("2.718281828459045");
-        String s = FastFloat.toString(f);  // Ryu formatting
+- **SIMD Vectorization** — Uses native C++ AVX2 vector instructions for multi-digit parallel parsing.
+- **Ryu Formatting** — Implements the Ryu algorithm for ultra-fast, shortest-representation float-to-string conversion.
+- **Zero-GC Fast Path** — Bit-packed `parseFloatZeroGC()` eliminates JVM Garbage Collection overhead completely.
 
-        // Zero-GC fast path with bit-packed result (no exceptions, no allocations)
-        long packed = FastFloat.parseFloatZeroGC("3.14159");
-        if (FastFloat.unpackError(packed) == FastFloat.ERR_OK) {
-            float value = FastFloat.unpackFloat(packed);  // Zero GC!
-        }
+---
 
-        // ByteBuffer API - parse from direct buffer (zero-copy, no String allocation)
-        ByteBuffer buffer = ByteBuffer.allocateDirect(32);
-        buffer.put("3.14159".getBytes());
-        float f2 = FastFloat.parseFloatBuffer(buffer, 0, 7);
+## Key Features
 
-        // Formatting with Ryu algorithm
-        String s = FastFloat.toString(3.14159f);
-    }
-}
+* **⚡ Native AVX2 SIMD Acceleration** — Leverages 256-bit AVX2 vector registers for ultra-fast digit scanning and conversion.
+* **🚀 5.1× Throughput Speedup** — Reaches over **21.6 Million parsing operations per second** on standard desktop hardware.
+* **🧠 Zero-GC Bit-Packed API** — Returns packed error status and float values inside a primitive `long` to prevent heap allocations.
+* **🌐 Ryu Algorithm Formatting** — Generates exact shortest string representations of floats and doubles with minimum latency.
+* **📦 Direct ByteBuffer Ingestion** — Parses floats directly from off-heap `ByteBuffer` regions without converting to `java.lang.String`.
+
+---
+
+## Real-World Use Cases
+
+- 📊 **High-Frequency Financial Data Feed**: Parse millions of stock quotes, ticks, and floating-point trade prices per second.
+- 🤖 **Machine Learning Feature Ingestion**: Accelerate CSV and JSON float feature parsing before feeding tensors into ONNX models.
+- 📡 **IoT & Telemetry Sensor Streams**: Process high-rate sensor readings directly from DMA native memory buffers without GC pauses.
+- 🎮 **Game Engine Physics & Graphics**: Deserialize 3D vertex positions and transformation matrices in real-time game loops.
+
+---
+
+## Performance Benchmarks
+
+In the official [JMH Benchmark](examples/10-benchmark), `FastFloat` measured parsing throughput against standard `Float.parseFloat()`:
+
+```text
+Benchmark                             Mode  Cnt        Score   Error  Units
+JMH_Float.benchmarkFastFloatParse    thrpt    2  21656206.611          ops/s
+JMH_Float.benchmarkJavaFloatParse    thrpt    2   4236773.465          ops/s
 ```
+
+> **21.6 Million Operations per Second (5.1× Speedup)**: `FastFloat` parses floating point strings at **21.65 Million ops/s**, achieving a **5.1× hardware speedup** over Java's standard `Float.parseFloat()` (4.23 Million ops/s).
+
+---
+
+## Architecture Overview
+
+**FastFloat (This Library — The Native Math Engine)**  
+Provides SIMD-accelerated float/double parsing and Ryu formatting for Java.
+
+**[FastSIMD](https://github.com/andrestubbe/FastSIMD) (Hardware Acceleration Engine)**  
+Provides cross-platform hardware SIMD primitives (`_mm256_cmpeq_epi8`, `_mm256_fmadd_ps`).
+
+**[FastJSON](https://github.com/andrestubbe/FastJSON) (Zero-GC JSON Parser)**  
+Integrates `FastFloat` for sub-microsecond JSON numerical field extraction.
+
+---
+
+## API Quick Reference
+
+| Method | Description | Path |
+|--------|-------------|------|
+| `parseFloat(String)` | Standard 5.1× faster float parsing. | [Reference 📖](docs/REFERENCE.md#parsefloat) |
+| `parseFloatZeroGC(String)` | Bit-packed zero-allocation float parsing. | [Reference 📖](docs/REFERENCE.md#parsefloatzerogc) |
+| `toString(float)` | High-speed Ryu float formatting. | [Reference 📖](docs/REFERENCE.md#tostring) |
 
 ---
 
@@ -71,7 +128,7 @@ public class Demo {
 
 ### Option 1: Maven (Recommended)
 
-Add the JitPack repository and the dependencies to your `pom.xml`:
+Add the JitPack repository and the complete dependency stack to your `pom.xml`:
 
 ```xml
 <repositories>
@@ -80,17 +137,42 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
         <url>https://jitpack.io</url>
     </repository>
 </repositories>
+
 <dependencies>
-   <dependency>
-       <groupId>com.github.andrestubbe</groupId>
-       <artifactId>fastfloat</artifactId>
-       <version>0.1.0</version>
-   </dependency>
-   <dependency>
-       <groupId>com.github.andrestubbe</groupId>
-       <artifactId>fastcore</artifactId>
-       <version>0.1.0</version>
-   </dependency>
+    <!-- FastFloat Engine -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastFloat</artifactId>
+        <version>0.1.1</version>
+    </dependency>
+
+    <!-- FastSIMD Hardware Vector Acceleration Engine -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastSIMD</artifactId>
+        <version>0.1.3</version>
+    </dependency>
+
+    <!-- FastMemory Aligned Allocator -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastMemory</artifactId>
+        <version>0.1.1</version>
+    </dependency>
+
+    <!-- FastPointer Address Wrapper -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastPointer</artifactId>
+        <version>0.1.1</version>
+    </dependency>
+
+    <!-- FastCore Native Loader -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastCore</artifactId>
+        <version>0.1.0</version>
+    </dependency>
 </dependencies>
 ```
 
@@ -100,203 +182,47 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
 repositories {
     maven { url 'https://jitpack.io' }
 }
+
 dependencies {
-    implementation 'com.github.andrestubbe:fastfloat:0.1.0'
-    implementation 'com.github.andrestubbe:fastcore:0.1.0'
+    implementation 'com.github.andrestubbe:FastFloat:0.1.1'
+    implementation 'com.github.andrestubbe:FastSIMD:0.1.3'
+    implementation 'com.github.andrestubbe:FastMemory:0.1.1'
+    implementation 'com.github.andrestubbe:FastPointer:0.1.1'
+    implementation 'com.github.andrestubbe:FastCore:0.1.0'
 }
 ```
 
 ### Option 3: Direct Download (No Build Tool)
 
-Download the latest JARs directly to add them to your classpath:
+Download the required JARs directly to add them to your classpath:
 
-1. 📦 **[fastfloat-0.1.0.jar](https://github.com/andrestubbe/FastFloat/releases/download/0.1.0/fastfloat-0.1.0.jar)** (The Core Library)
-2. ⚙️ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (The Mandatory Native Loader)
+1. ⚡ **[FastFloat-0.1.1.jar](https://github.com/andrestubbe/FastFloat/releases/download/0.1.1/FastFloat-0.1.1.jar)** (The Core Library)
+2. 🚀 **[FastSIMD-0.1.3.jar](https://github.com/andrestubbe/FastSIMD/releases/download/0.1.3/FastSIMD-0.1.3.jar)** (Hardware Vector Acceleration Engine)
+3. 💾 **[FastMemory-0.1.1.jar](https://github.com/andrestubbe/FastMemory/releases/download/0.1.1/FastMemory-0.1.1.jar)** (32-Byte Aligned Allocator)
+4. 📍 **[FastPointer-0.1.1.jar](https://github.com/andrestubbe/FastPointer/releases/download/0.1.1/FastPointer-0.1.1.jar)** (Primitive Address Pointer)
+5. ⚙️ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (Mandatory Native Loader)
 
----
-
-## Features & Keywords
-
-**Core Capabilities:**
-
-- **Native float/double parsing** — 5-12× faster than Java standard library
-- **Zero-GC operation** — No garbage collection pauses, ideal for real-time systems
-- **SIMD batch operations** — AVX2/AVX-512 accelerated array processing
-- **ByteBuffer parsing** — Zero-copy direct memory access
-- **Ryu formatting** — Fastest known double-to-string algorithm
-- **Dual-mode parsing** — Pure-Java for short strings, native SIMD for long strings
-- **Multi-binary runtime dispatch** — Auto-selects optimal CPU instructions
+> [!IMPORTANT]
+> All JARs must be included in your classpath for the native SIMD JNI bindings to function correctly.
 
 ---
 
-## API Reference
+## Documentation
 
-### Core Parsing
-
-| Method                              | Description                            |
-|-------------------------------------|----------------------------------------|
-| `parseFloat(String)`                | Parse float (native, throws on error)  |
-| `parseDouble(String)`               | Parse double (native, throws on error) |
-| `parseFloatFast(String, float[])`   | Error-code return, no exceptions       |
-| `parseDoubleFast(String, double[])` | Error-code return, no exceptions       |
-
-### Zero-GC Fast Path (v1.1.0+)
-
-| Method                      | Description                                        |
-|-----------------------------|----------------------------------------------------|
-| `parseFloatZeroGC(String)`  | Parse with bit-packed result, **zero allocations** |
-| `parseDoubleZeroGC(String)` | Parse with bit-packed result, **zero allocations** |
-| `unpackFloat(long)`         | Extract float from bit-packed result               |
-| `unpackError(long)`         | Extract error code from bit-packed result          |
-
-**Usage:**
-
-```java
-long packed = FastFloat.parseFloatZeroGC("3.14159");
-if (FastFloat.unpackError(packed) == FastFloat.ERR_OK) {
-    float value = FastFloat.unpackFloat(packed);  // Zero GC!
-}
-```
-
-### ByteBuffer API (v1.1.0+) - Zero Copy
-
-Parse directly from memory without String allocation:
-
-| Method                                       | Description                             |
-|----------------------------------------------|-----------------------------------------|
-| `parseFloatBuffer(ByteBuffer, offset, len)`  | Parse from direct ByteBuffer            |
-| `parseDoubleBuffer(ByteBuffer, offset, len)` | Parse from direct ByteBuffer            |
-| `parseFloatBatchBuffer(...)`                 | Batch parse with offsets (one JNI call) |
-| `parseDoubleBatchBuffer(...)`                | Batch parse with offsets (one JNI call) |
-
-**Usage:**
-
-```java
-ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
-// ... fill with ASCII float strings ...
-float val = FastFloat.parseFloatBuffer(buffer, 0, 7);
-```
-
-### Formatting
-
-| Method                  | Description             |
-|-------------------------|-------------------------|
-| `toString(float)`       | Format float to string  |
-| `toString(double)`      | Format double to string |
-| `toString(float, int)`  | Format with precision   |
-| `toString(double, int)` | Format with precision   |
-
-### Batch Operations (SIMD)
-
-```java
-// Parse 1000 floats at once
-String[] inputs = generateStrings(1000);
-float[] outputs = new float[1000];
-int success = FastFloat.parseFloatBatch(inputs, outputs);
-```
-
-### SIMD Batch Math
-
-```java
-import fastfloat.FastFloatBatch;
-
-float[] a = {1.0f, 2.0f, 3.0f};
-float[] b = {4.0f, 5.0f, 6.0f};
-float[] out = new float[3];
-
-FastFloatBatch.add(a, b, out);  // out = {5.0, 7.0, 9.0}
-FastFloatBatch.mul(a, b, out);  // out = {4.0, 10.0, 18.0}
-FastFloatBatch.fma(a, b, c, out);  // out = a*b + c
-```
+- **[COMPILE.md](docs/COMPILE.md)**: Full compilation guide (MSVC C++17 build chain + JNI Setup).
+- **[REFERENCE.md](docs/REFERENCE.md)**: Full API contracts and routing logic.
+- **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**: Zero Context-Loss and zero-GC philosophy.
+- **[ROADMAP.md](docs/ROADMAP.md)**: Future development goals.
 
 ---
 
-## Performance
+## Platform Support
 
-| Operation          | Java Standard | FastFloat    | Speedup             |
-|--------------------|---------------|--------------|---------------------|
-| `parseFloat`       | ~50 ns/op     | ~3-5 ns/op   | **10-16x**          |
-| `parseDouble`      | ~80 ns/op     | ~5-8 ns/op   | **10-16x**          |
-| `parseFloatZeroGC` | -             | ~3 ns/op     | **Zero GC**         |
-| `parseFloatBuffer` | -             | ~2-4 ns/op   | **No String alloc** |
-| `toString(float)`  | ~100 ns/op    | ~10-15 ns/op | **6-10x**           |
-| Batch 1000 ops     | ~50 μs        | ~3-5 μs      | **10-16x**          |
-
-*Benchmarks on Intel i7-12700K, JDK 21. Results vary by CPU and input patterns.*
-
-### Why FastFloat is Faster
-
-- **Eisel-Lemire Algorithm**: State-of-the-art float parsing (used in GCC, Chrome, MySQL)
-- **SIMD Acceleration**: AVX2/AVX-512 batch operations
-- **Zero-GC Path**: ThreadLocal buffers eliminate allocations
-- **ByteBuffer API**: Direct memory access without String marshaling
-- **Ryu Formatting**: Fastest known double-to-string algorithm
-- **Branchless Parsing**: Optimized for modern CPU branch predictors
-
----
-
-## Project Structure
-
-```
-fastfloat/
-├── src/main/java/fastfloat/     # Core API
-│   ├── FastFloat.java            # Parsing & formatting
-│   └── FastFloatBatch.java       # SIMD batch ops
-├── native/                         # C++ JNI code
-│   ├── fastfloat.h
-│   ├── fastfloat.cpp             # Main implementation
-│   ├── fastfloat_ryu.cpp         # Ryu formatting algorithm
-│   ├── fastfloat_ryu.h
-│   └── fastfloat.def             # JNI exports (Windows)
-├── examples/
-│   ├── 00-basic-usage/           # Hello World demo
-│   └── 10-benchmark/             # JMH benchmarks
-├── compile.bat                   # Build native DLL (Windows)
-├── compile.sh                    # Build native library (Linux/macOS)
-└── pom.xml
-```
-
----
-
-## Build from Source
-
-See [COMPILE.md](docs/COMPILE.md) for detailed build instructions.
-
----
-
-## Error Codes
-
-FastFloat uses error codes instead of exceptions for the fast-path API:
-
-```java
-public static final int ERR_OK = 0;         // Success
-public static final int ERR_EMPTY = 1;      // Empty string
-public static final int ERR_INVALID = 2;    // Invalid format
-public static final int ERR_OVERFLOW = 3;     // Value too large
-public static final int ERR_UNDERFLOW = 4;    // Value too small
-```
-
----
-
-## Integration
-
-### FastJSON
-
-FastFloat provides the numeric backend for FastJSON parsing:
-
-```java
-// FastJSON automatically uses FastFloat when available
-FastJSON json = new FastJSON();
-json.useFastFloatBackend(true);
-```
-
-### FastMath
-
-SIMD batch operations feed into FastMath vector operations:
-
-```java
-FastMath.setSIMDBackend(FastFloatBatch .class);
-```
+| Platform | Status |
+|----------|--------|
+| Windows 10/11 (x64) | ✅ Fully Supported |
+| Linux | 🔄 Planned |
+| macOS | 🔄 Planned |
 
 ---
 
@@ -308,11 +234,11 @@ MIT License — See [LICENSE](LICENSE) file for details.
 
 ## Related Projects
 
-- [FastFileIndex](https://github.com/andrestubbe/FastFileIndex) — Ultra-fast filesystem scanner
-- [FastTheme](https://github.com/andrestubbe/FastTheme) — High-performance native window styling
-- [FastThumb](https://github.com/andrestubbe/FastThumb) — Native Shell Image Engine
+- [FastMath](https://github.com/andrestubbe/FastMath) — SIMD and GPU vector math functions
+- [FastJSON](https://github.com/andrestubbe/FastJSON) — High-speed SIMD JSON parser
+- [FastBytes](https://github.com/andrestubbe/FastBytes) — AVX2 byte array operations
+- [FastCore](https://github.com/andrestubbe/FastCore) — Native JNI loader for FastJava libraries
 
 ---
 
-**Part of the FastJava Ecosystem** — *Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋*
-
+Part of the FastJava Ecosystem — Making the JVM faster. Small package. Maximum speed. Zero bloat. ⚡
