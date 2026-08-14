@@ -5,6 +5,7 @@
 #include "fastfloat_ryu.h"
 #include <cstdint>
 #include <cstring>
+#include <cstdio>
 
 // Ryu tables - 64-bit constants
 static const uint64_t FLOAT_MANTISSA_BITS = 23;
