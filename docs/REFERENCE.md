@@ -6,7 +6,7 @@
 
 ## 1. Core Parsing API
 
-### `parseFloat(String s)`
+### `parseFloat`
 Parses a single `float` value from the provided String with automatic dual-mode strategy selection.
 
 ```java
@@ -41,7 +41,7 @@ float val = FastFloat.parseFloatNative("3.14159265358979");
 
 ## 2. Zero-GC & Fast-Path Parsing API
 
-### `parseFloatZeroGC(String s)`
+### `parseFloatZeroGC`
 Fastest single-value parsing method. Returns a bit-packed `long` primitive containing both the error code and parsed float bits, completely avoiding JVM GC allocations and Exception throwing.
 
 ```java
@@ -96,7 +96,7 @@ int count = FastFloat.parseFloatBatchBuffer(buffer, offsets, lengths, outputs);
 
 ## 4. Ryu Formatting API
 
-### `toString(float v)` & `toString(double v)`
+### `toString`
 Formats a float or double into its shortest exact string representation using the native Ryu algorithm.
 
 ```java
