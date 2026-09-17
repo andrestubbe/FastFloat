@@ -48,6 +48,7 @@ public class Demo {
 - [Key Features](#key-features)
 - [Real-World Use Cases](#real-world-use-cases)
 - [Performance Benchmarks](#performance-benchmarks)
+- [Technical Demos & Benchmarks](#technical-demos--benchmarks)
 - [Architecture Overview](#architecture-overview)
 - [API Quick Reference](#api-quick-reference)
 - [Installation](#installation)
@@ -100,11 +101,22 @@ In the official [JMH Benchmark](examples/10-benchmark), `FastFloat` measured par
 
 ```text
 Benchmark                             Mode  Cnt        Score   Error  Units
-JMH_Float.benchmarkFastFloatParse    thrpt    2  21656206.611          ops/s
-JMH_Float.benchmarkJavaFloatParse    thrpt    2   4236773.465          ops/s
+Benchmark.benchmarkFastFloatParse    thrpt    2  21656206.611          ops/s
+Benchmark.benchmarkJavaFloatParse    thrpt    2   4236773.465          ops/s
 ```
 
 > **21.6 Million Operations per Second (5.1× Speedup)**: `FastFloat` parses floating point strings at **21.65 Million ops/s**, achieving a **5.1× hardware speedup** over Java's standard `Float.parseFloat()` (4.23 Million ops/s).
+
+---
+
+## Technical Demos & Benchmarks
+
+Run standalone verification demos or execute JMH throughput benchmarks:
+
+| Type | Target / Launcher | Source File | Description |
+| :--- | :--- | :--- | :--- |
+| **Interactive Demo** | [`run-demo.bat`](run-demo.bat) | [`Demo.java`](examples/00-basic-usage/src/main/java/fastfloat/example/Demo.java) | Live float/double parsing, zero-GC bit-packed unpacking, and Ryu formatting |
+| **Throughput Benchmark** | [`run-benchmark.bat`](run-benchmark.bat) | [`Benchmark.java`](examples/10-benchmark/src/main/java/fastfloat/benchmark/Benchmark.java) | JMH benchmark comparing SIMD `FastFloat.parseFloat` against `Float.parseFloat` |
 
 ---
 

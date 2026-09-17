@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = 1, time = 1)
 @Measurement(iterations = 2, time = 1)
 @Fork(1)
-public class JMH_Float {
+public class Benchmark {
 
     private String sampleFloatStr;
 
