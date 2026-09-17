@@ -48,9 +48,9 @@ public class Demo {
 - [Key Features](#key-features)
 - [Real-World Use Cases](#real-world-use-cases)
 - [Performance Benchmarks](#performance-benchmarks)
-- [Technical Demos & Benchmarks](#technical-demos--benchmarks)
 - [Architecture Overview](#architecture-overview)
 - [API Quick Reference](#api-quick-reference)
+- [Technical Demos & Benchmarks](#technical-demos--benchmarks)
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Platform Support](#platform-support)
@@ -109,17 +109,6 @@ Benchmark.benchmarkJavaFloatParse    thrpt    2   4236773.465          ops/s
 
 ---
 
-## Technical Demos & Benchmarks
-
-Run standalone verification demos or execute JMH throughput benchmarks:
-
-| Type | Target / Launcher | Source File | Description |
-| :--- | :--- | :--- | :--- |
-| **Interactive Demo** | [`run-demo.bat`](run-demo.bat) | [`Demo.java`](examples/00-basic-usage/src/main/java/fastfloat/example/Demo.java) | Live float/double parsing, zero-GC bit-packed unpacking, and Ryu formatting |
-| **Throughput Benchmark** | [`run-benchmark.bat`](run-benchmark.bat) | [`Benchmark.java`](examples/10-benchmark/src/main/java/fastfloat/benchmark/Benchmark.java) | JMH benchmark comparing SIMD `FastFloat.parseFloat` against `Float.parseFloat` |
-
----
-
 ## Architecture Overview
 
 **FastFloat (This Library — The Native Math Engine)**  
@@ -140,6 +129,17 @@ Integrates `FastFloat` for sub-microsecond JSON numerical field extraction.
 | `parseFloat(String)` | Standard 5.1× faster float parsing. | [Reference 📖](docs/REFERENCE.md#parsefloat) |
 | `parseFloatZeroGC(String)` | Bit-packed zero-allocation float parsing. | [Reference 📖](docs/REFERENCE.md#parsefloatzerogc) |
 | `toString(float)` | High-speed Ryu float formatting. | [Reference 📖](docs/REFERENCE.md#tostring) |
+
+---
+
+## Technical Demos & Benchmarks
+
+Run standalone verification demos or execute JMH throughput benchmarks:
+
+| Type | Target / Launcher | Source File | Description |
+| :--- | :--- | :--- | :--- |
+| **Interactive Demo** | [`run-demo.bat`](run-demo.bat) | [`Demo.java`](examples/00-basic-usage/src/main/java/fastfloat/example/Demo.java) | Live float/double parsing, zero-GC bit-packed unpacking, and Ryu formatting |
+| **Throughput Benchmark** | [`run-benchmark.bat`](run-benchmark.bat) | [`Benchmark.java`](examples/10-benchmark/src/main/java/fastfloat/benchmark/Benchmark.java) | JMH benchmark comparing SIMD `FastFloat.parseFloat` against `Float.parseFloat` |
 
 ---
 
